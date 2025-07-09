@@ -353,16 +353,22 @@
           }
         }, 1000);
       } else {
-        // Not a match
-        setTimeout(() => {
+        // Not a match: wait for user click to turn down, but only after flip-up animation
+        function handleHideWrongPair(event) {
+          document.removeEventListener('click', handleHideWrongPair, true);
           firstCard.flipped = false;
           secondCard.flipped = false;
           updateCardFlip(firstCard.id, false);
           updateCardFlip(secondCard.id, false);
-          gameState.firstCard = null;
-          gameState.secondCard = null;
-          gameState.lock = false;
-        }, 1000);
+          setTimeout(() => {
+            gameState.firstCard = null;
+            gameState.secondCard = null;
+            gameState.lock = false;
+          }, 600); // Wait for flip-down animation to finish
+        }
+        setTimeout(() => {
+          document.addEventListener('click', handleHideWrongPair, true);
+        }, 600); // Wait for flip-up animation to finish before allowing click
       }
     }
 
